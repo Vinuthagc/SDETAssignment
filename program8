@@ -1,0 +1,30 @@
+
+pip install selenium pytest
+
+conftest.py
+---------------------------------
+import pytest
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+
+
+@pytest.fixture
+def setup():
+    # Initialize Chrome WebDriver
+    driver = webdriver.Chrome()
+    driver.maximize_window()
+    yield driver
+    driver.quit()
+
+
+
+test_w3schools.py
+---------------------------------
+from selenium.webdriver.common.by import By
+
+def test_logo(setup):
+    driver = setup
+    driver.get("https://www.w3schools.com/")
+    logo = driver.find_element(By.XPATH, "//img[contains(@src, 'w3schools_logo')]")
+    assert logo.is_displayed(), "W3Schools logo is not displayed on the page"
