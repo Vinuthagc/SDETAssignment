@@ -1,0 +1,60 @@
+import org.testng.annotations.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.*;
+import java.time.Duration;
+import java.util.*;
+
+public class MakeMyTripTest {
+    WebDriver driver;
+    WebDriverWait wait;
+
+    @BeforeMethod
+    public void setup() {
+        System.setProperty("webdriver.chrome.driver","C:\\path\\chromedriver.exe");
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get("https://www.makemytrip.com/");
+    }
+
+    @Test(priority=1)
+    public void logoTest() {
+        WebElement logo = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//img[contains(@alt,'MakeMyTrip') or contains(@src,'logo')]")));
+        assert logo.isDisplayed();
+    }
+
+    @Test(priority=2)
+    public void flightTest() {
+        click(By.xpath("//span[text()='Flights']"));
+        click(By.xpath("//li[@data-cy='oneWayTrip']"));
+        enterCity(By.xpath("//label[@for='fromCity']"),
+                  By.xpath("//input[@id='fromCity']"), "Delhi");
+        enterCity(By.xpath("//label[@for='toCity']"),
+                  By.xpath("//input[@id='toCity']"), "Mumbai");
+    }
+
+    public void click(By locator) {
+        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void enterCity(By label, By input, String city) {
+        click(label);
+        WebElement inputEle = wait.until(ExpectedConditions.elementToBeClickable(input));
+        inputEle.sendKeys(city);
+        By suggestion = By.xpath("//ul/li//p[contains(text(),'" + city + "')]");
+        List<WebElement> opts = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(suggestion));
+        for (WebElement o : opts) {
+            if (o.getText().contains(city)) {
+                o.click();
+                break;
+            }
+        }
+    }
+
+    @AfterMethod
+    public void teardown() {
+        driver.quit();
+    }
+}
+
