@@ -1,60 +1,92 @@
+
+MakeMyTripTestNG.java:
+
+package com.makemytrip.tests;
 import org.testng.annotations.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
 
-public class MakeMyTripTest {
+public class MakeMyTripTestNG {
+
     WebDriver driver;
     WebDriverWait wait;
 
     @BeforeMethod
-    public void setup() {
-        System.setProperty("webdriver.chrome.driver","C:\\path\\chromedriver.exe");
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "C:\\path\\to\\chromedriver.exe");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+    }
+
+    @Test(priority = 1)
+    public void verifyLogoTest() {
         driver.get("https://www.makemytrip.com/");
-    }
 
-    @Test(priority=1)
-    public void logoTest() {
         WebElement logo = wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.xpath("//img[contains(@alt,'MakeMyTrip') or contains(@src,'logo')]")));
-        assert logo.isDisplayed();
+                By.xpath("//img[contains(@alt,'MakeMyTrip') or contains(@src,'logo')]")));
+
+        assert logo.isDisplayed() : "MakeMyTrip logo is not displayed!";
     }
 
-    @Test(priority=2)
-    public void flightTest() {
-        click(By.xpath("//span[text()='Flights']"));
-        click(By.xpath("//li[@data-cy='oneWayTrip']"));
+    @Test(priority = 2)
+    public void flightSearchTest() {
+        driver.get("https://www.makemytrip.com/");
+
+        clickElement(By.xpath("//span[text()='Flights']"));
+        clickElement(By.xpath("//li[@data-cy='oneWayTrip']"));
+
         enterCity(By.xpath("//label[@for='fromCity']"),
                   By.xpath("//input[@id='fromCity']"), "Delhi");
+
         enterCity(By.xpath("//label[@for='toCity']"),
                   By.xpath("//input[@id='toCity']"), "Mumbai");
     }
 
-    public void click(By locator) {
+    public void clickElement(By locator) {
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
-    public void enterCity(By label, By input, String city) {
-        click(label);
-        WebElement inputEle = wait.until(ExpectedConditions.elementToBeClickable(input));
-        inputEle.sendKeys(city);
+    public void enterCity(By labelLocator, By inputLocator, String city) {
+        clickElement(labelLocator);
+        WebElement input = wait.until(ExpectedConditions.elementToBeClickable(inputLocator));
+        input.clear();
+        input.sendKeys(city);
+
         By suggestion = By.xpath("//ul/li//p[contains(text(),'" + city + "')]");
-        List<WebElement> opts = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(suggestion));
-        for (WebElement o : opts) {
-            if (o.getText().contains(city)) {
-                o.click();
+        List<WebElement> options = wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(suggestion));
+
+        for (WebElement opt : options) {
+            if (opt.getText().contains(city)) {
+                opt.click();
                 break;
             }
         }
     }
 
     @AfterMethod
-    public void teardown() {
-        driver.quit();
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
+
+Testng.xml:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="MakeMyTripSuite">
+    <test name="MakeMyTripTests">
+        <classes>
+            <class name="com.makemytrip.tests.MakeMyTripTestNG"/>
+        </classes>
+    </test>
+</suite>
+
 
