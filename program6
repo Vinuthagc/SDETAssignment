@@ -1,0 +1,21 @@
+
+6. Create a Maven Project and implement all the programs in Maven Project
+and add all the necessary Jars and run all the programs using Maven
+Commands
+
+Pom.xml
+
+<dependencies>
+    <!-- Selenium WebDriver -->
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.10.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>7.11.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
