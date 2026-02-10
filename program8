@@ -1,27 +1,40 @@
-8. Postman – API Testing (Positive & Negative Test Cases)
-Postman is used to test RESTful APIs by sending HTTP requests and validating the server
-responses. Both positive and negative scenarios are tested.
-APIs Used:
+APIs Used
 GET : https://api.restful-api.dev/objects/5
 POST : https://api.restful-api.dev/objects
 PUT : https://api.restful-api.dev/objects/5
 DELETE : https://api.restful-api.dev/objects/7
-Positive Test Cases:
-• GET – Retrieve existing object details (Status Code: 200)
-• POST – Create new object (Status Code: 201)
-• PUT – Update object details (Status Code: 200)
-• DELETE – Delete object (Status Code: 200 / 204)
-POST Request Body:
+
+Positive Test Cases
+
+GET – Retrieve existing object details
+Expected Status Code: 200 OK
+POST – Create a new object (ID auto-generated)
+Expected Status Code: 201 Created
+PUT – Update existing object details
+Expected Status Code: 200 OK
+DELETE – Delete existing object
+Expected Status Code: 200 OK / 204 No Content
+
+POST Request Body
 {
-"name": "Mobile Phone",
-"data": {
-"year": 2024,
-"price": 35000
+  "name": "Mobile Phone",
+  "data": {
+    "year": 2024,
+    "price": 35000
+  }
 }
-}
-Negative Test Cases:
-• GET with invalid ID – 404 Not Found
-• POST with empty body – 400 Bad Request
-• PUT with invalid ID – 404 Not Found
-• DELETE non-existing ID – 404 Not Found
-Validation: HTTP Status Codes and response body are validated using Postman tests.
+
+Negative Test Cases
+
+GET with invalid ID – Object not found
+Expected Status Code: 404 Not Found
+POST with empty request body – Validation failure
+Expected Status Code: 400 Bad Request
+PUT with invalid ID – Object not found
+Expected Status Code: 404 Not Found
+DELETE with non-existing ID – Object not found
+Expected Status Code: 404 Not Found
+
+Validation
+HTTP status codes are validated using Postman Tests.
+Response body is verified to ensure correct data or error message is returned.
